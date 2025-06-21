@@ -10,11 +10,6 @@ const ResultsPage = () => {
   const [loading, setLoading] = useState(false);
   const instructorId = localStorage.getItem('userId');
 
-useEffect(() => {
-  fetchAssessments();
-  fetchStudents();
-}, [fetchAssessments, fetchStudents]);
-
 
 const fetchAssessments = useCallback(async () => {
   try {
@@ -46,6 +41,11 @@ const fetchStudents = useCallback(async () => {
     console.error('Failed to load students', err);
   }
 }, []);
+
+useEffect(() => {
+  fetchAssessments();
+  fetchStudents();
+}, [fetchAssessments, fetchStudents]);
 
 
   const fetchResults = async (assessmentId) => {
