@@ -8,10 +8,28 @@ const AssessmentResultsPage = () => {
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState('');
 
-  useEffect(() => {
-    fetchAssessmentTitle();
-    fetchResults();
-  }, [id]);
+  const fetchAssessmentTitle = async () => {
+  try {
+    const res = await api.get(`/Assessments/${id}`);
+    setTitle(res.data.Title);
+  } catch (err) {
+    console.error('Error fetching assessment title', err);
+  }
+};
+
+const fetchResults = async () => {
+  try {
+    const res = await api.get(`/Results/Assessment/${id}`);
+    setResults(res.data);
+  } catch (err) {
+    console.error('Error fetching results', err);
+  }
+};
+
+useEffect(() => {
+  fetchAssessmentTitle();
+  fetchResults();
+}, [id]); 
 
   const fetchAssessmentTitle = async () => {
     try {
