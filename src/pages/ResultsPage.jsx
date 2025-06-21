@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
 
@@ -10,40 +10,43 @@ const ResultsPage = () => {
   const [loading, setLoading] = useState(false);
   const instructorId = localStorage.getItem('userId');
 
-  useEffect(() => {
-    fetchAssessments();
-    fetchStudents();
-  }, []);
+useEffect(() => {
+  fetchAssessments();
+  fetchStudents();
+}, [fetchAssessments, fetchStudents]);
 
-  const fetchAssessments = async () => {
-    try {
-      const [coursesRes, assessmentsRes] = await Promise.all([
-        api.get('/Course'),
-        api.get('/Assessments'),
-      ]);
 
-      const instructorCourses = coursesRes.data
-        .filter((course) => course.instructorId === instructorId)
-        .map((course) => course.courseId);
+const fetchAssessments = useCallback(async () => {
+  try {
+    const [coursesRes, assessmentsRes] = await Promise.all([
+      api.get('/Course'),
+      api.get('/Assessments'),
+    ]);
 
-      const instructorAssessments = assessmentsRes.data.filter((assessment) =>
-        instructorCourses.includes(assessment.courseId)
-      );
+    const instructorCourses = coursesRes.data
+      .filter((course) => course.instructorId === instructorId)
+      .map((course) => course.courseId);
 
-      setAssessments(instructorAssessments);
-    } catch (err) {
-      console.error('Failed to load assessments or courses', err);
-    }
-  };
+    const instructorAssessments = assessmentsRes.data.filter((assessment) =>
+      instructorCourses.includes(assessment.courseId)
+    );
 
-  const fetchStudents = async () => {
-    try {
-      const res = await api.get('/UserModels');
-      setStudents(res.data);
-    } catch (err) {
-      console.error('Failed to load students', err);
-    }
-  };
+    setAssessments(instructorAssessments);
+  } catch (err) {
+    console.error('Failed to load assessments or courses', err);
+  }
+}, [instructorId]);
+
+
+const fetchStudents = useCallback(async () => {
+  try {
+    const res = await api.get('/UserModels');
+    setStudents(res.data);
+  } catch (err) {
+    console.error('Failed to load students', err);
+  }
+}, []);
+
 
   const fetchResults = async (assessmentId) => {
     try {
