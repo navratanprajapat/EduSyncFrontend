@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../api/axios';
@@ -8,30 +8,31 @@ const AssessmentResultsPage = () => {
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState('');
 
-  
-
-useEffect(() => {
-  fetchAssessmentTitle();
-  fetchResults();
-}, [id]); 
-
-  const fetchAssessmentTitle = async () => {
+  // Fetch assessment title
+  const fetchAssessmentTitle = useCallback(async () => {
     try {
       const res = await api.get(`/Assessments/${id}`);
       setTitle(res.data.Title);
     } catch (err) {
-      console.error('Error fetching assessment title', err);
+      console.error('Error fetching assessment title:', err);
     }
-  };
+  }, [id]);
 
-  const fetchResults = async () => {
+  // Fetch results for assessment
+  const fetchResults = useCallback(async () => {
     try {
       const res = await api.get(`/Results/Assessment/${id}`);
       setResults(res.data);
     } catch (err) {
-      console.error('Error fetching results', err);
+      console.error('Error fetching results:', err);
     }
-  };
+  }, [id]);
+
+  // Fetch data on mount or when ID changes
+  useEffect(() => {
+    fetchAssessmentTitle();
+    fetchResults();
+  }, [fetchAssessmentTitle, fetchResults]);
 
   return (
     <motion.div
