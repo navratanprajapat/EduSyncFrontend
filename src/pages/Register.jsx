@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
@@ -30,7 +30,7 @@ const Register = () => {
         role: form.Role
       };
       
-      const response = await api.post('/Auth/register', registrationData, {
+      await api.post('/Auth/register', registrationData, {
         headers: {
           'Content-Type': 'application/json'
         }
