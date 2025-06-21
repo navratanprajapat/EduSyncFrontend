@@ -9,16 +9,9 @@ const Login = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  
 
-  useEffect(() => {
-    function checkMobile() {
-      setIsMobile(window.innerWidth < 768);
-    }
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
